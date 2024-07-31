@@ -40,7 +40,7 @@ const handleLoginSubmit = async (data: ILoginState) => {
   const session = await res.json();
 
   console.log(session);
-  localStorage.setItem("session", session.sessionId);
+  localStorage.setItem("session", session.token);
   window.location.href = "/todos";
 }
 

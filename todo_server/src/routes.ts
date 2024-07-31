@@ -44,7 +44,7 @@ const updateTodoSchema = z.object({
 router.put("/todos", validate(updateTodoSchema), auth, updateTodoHandler);
 
 const deleteTodoSchema = z.object({
-  todoId: z.string().uuid(),
+  todoId: z.string(),
 
 });
 router.delete("/todos", auth, validate(deleteTodoSchema), deleteTodoHandler);

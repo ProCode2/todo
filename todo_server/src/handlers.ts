@@ -41,7 +41,7 @@ export const loginHandler = async (req: Request, res: Response) => {
 
 export const getAllTodosHandler = async (req: RequestWithUserID, res: Response) => {
   if (!req.userId) {
-    return res.status(403).json({message: "Unauthenticated"});
+    return res.status(403).json({ message: "Unauthenticated" });
   }
   try {
     const todos = await getTodos(req.userId)
@@ -53,7 +53,7 @@ export const getAllTodosHandler = async (req: RequestWithUserID, res: Response) 
 
 export const createTodoHandler = async (req: RequestWithUserID, res: Response) => {
   if (!req.userId) {
-    return res.status(403).json({message: "Unauthenticated"});
+    return res.status(403).json({ message: "Unauthenticated" });
   }
   const { task } = req.body;
   try {
@@ -67,7 +67,7 @@ export const createTodoHandler = async (req: RequestWithUserID, res: Response) =
 
 export const updateTodoHandler = async (req: RequestWithUserID, res: Response) => {
   if (!req.userId) {
-    return res.status(403).json({message: "Unauthenticated"});
+    return res.status(403).json({ message: "Unauthenticated" });
   }
   const { todoId, task, status } = req.body;
   try {
@@ -80,7 +80,7 @@ export const updateTodoHandler = async (req: RequestWithUserID, res: Response) =
 
 export const deleteTodoHandler = async (req: RequestWithUserID, res: Response) => {
   if (!req.userId) {
-    return res.status(403).json({message: "Unauthenticated"});
+    return res.status(403).json({ message: "Unauthenticated" });
   }
   const { todoId } = req.body;
   try {

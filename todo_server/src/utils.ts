@@ -1,7 +1,7 @@
 import { sign } from "jsonwebtoken";
 import { hash, compare } from "bcrypt";
 import { prisma } from "./db";
-import { User, Todo, Status} from "@prisma/client";
+import { User, Todo, Status, Prisma } from "@prisma/client";
 
 const SECRET_KEY = process.env.SECRET_JWT_SIGNING_KEY;
 
@@ -25,7 +25,7 @@ export const hashPWD = async (password: string): Promise<string> => {
 
 export const matchPWD = async (expectation: string, reality: string): Promise<boolean> => {
   return (await compare(expectation, reality));
-} 
+}
 
 export const createUser = async (name: string, phone: string, password: string): Promise<User> => {
   const data = await prisma.user.create({
@@ -49,16 +49,14 @@ export const getUserByPhone = async (phone: string): Promise<User | null> => {
 
 // get all todos by of an user
 export const getTodos = async (userId: string): Promise<Todo[]> => {
-  const todos = await prisma.todo.findMany({where: {
-    userId
-  }});
-
+  const todos = await prisma.todo.findMany({ where: { userId } });
+  console.log(todos);
   return todos;
 }
 
 
 // create a todo for an user
-export const  createTodo = async (userId: string, task: string): Promise<Todo> => {
+export const createTodo = async (userId: string, task: string): Promise<Todo> => {
   const todo = await prisma.todo.create({
     data: {
       task,
@@ -89,7 +87,7 @@ export const updateTodo = async (userId: string, todoId: string, task: string, s
 
 // delet a todo
 export const deleteTodo = async (userId: string, todoId: string): Promise<Todo> => {
-  const todo = await prisma.todo.delete({where: {id: todoId, userId}});
+  const todo = await prisma.todo.delete({ where: { id: todoId, userId } });
 
   return todo;
 }
