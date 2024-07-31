@@ -18,11 +18,11 @@ import { Loader } from "lucide-react"
 
 interface ILoginState {
   phone: string;
-  otp: string;
+  password: string;
 }
 
 const handleLoginSubmit = async (data: ILoginState) => {
-  if (data.phone.length != 10 || data.otp.length != 6) {
+  if (data.phone.length != 10 || data.password.length != 6) {
     throw Error("Please fill all the fields before submitting.");
 
   }
@@ -41,13 +41,13 @@ const handleLoginSubmit = async (data: ILoginState) => {
 
   console.log(session);
   localStorage.setItem("session", session.sessionId);
-  window.location.href = "/chat";
+  window.location.href = "/todos";
 }
 
 export const LoginPage = () => {
   const [state, setState] = useState<ILoginState>({
     phone: "",
-    otp: ""
+    password: ""
   });
 
   const loginMutation = useMutation({mutationFn: handleLoginSubmit})
@@ -94,7 +94,7 @@ export const LoginPage = () => {
             <div className="flex items-center">
               <Label htmlFor="password">Password</Label>
             </div>
-            <Input id="otp" value={state.otp} type="text" placeholder="123456" required onChange={(e) => setState((prev) => ({...prev, otp: e.target.value}))} />
+            <Input id="password" value={state.password} type="text" placeholder="123456" required onChange={(e) => setState((prev) => ({...prev, password: e.target.value}))} />
           </div>
           <Button type="submit" className="w-full" onClick={() => loginMutation.mutate(state)}>
             <span>Login</span>

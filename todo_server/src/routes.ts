@@ -26,6 +26,7 @@ router.post("/login", validate(loginSchema), loginHandler);
 
 
 // Authenticated/protected routed
+// Todo Routes
 router.get("/todos", auth, getAllTodosHandler);
 
 const createTodoSchema = z.object({

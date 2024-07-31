@@ -10,16 +10,6 @@ import { useEffect } from "react";
 import { toast } from "./ui/use-toast";
 
 const logOut = async () => {
-  const res = await fetch("/api/logout", {
-    method: "delete",
-    headers: {
-      "Content-Type": "application/json",
-      "Authentication": window.localStorage.getItem("session") || ""
-    }
-  });
-  if (res.status !== 200) {
-    throw Error("Can not log out at the moment.")
-  }
   window.localStorage.removeItem("session");
   window.location.href = "/";
 }
@@ -74,7 +64,7 @@ export const SideBar = () => {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <>
-                        {logoutMutation.isPending ? <Loader className="h-5 w-5 animate-spin" /> : <LogOut onClick={() => logoutMutation.mutate()} className="h-5 w-5" />}                        <span className="sr-only">Log out</span>
+                        {logoutMutation.isPending ? <Loader className="h-5 w-5 animate-spin text-muted-foreground hover:text-foreground transition-colors" /> : <LogOut onClick={() => logoutMutation.mutate()} className="cursor-pointer h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />}                        <span className="sr-only">Log out</span>
                       </>
                     </TooltipTrigger>
                     <TooltipContent side="right">Log out</TooltipContent>

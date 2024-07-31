@@ -6,7 +6,7 @@ import {router} from "./routes";
 const app: Express = express();
 app.use(express.json());
 
-app.use(router);
+app.use("/api", router);
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {

@@ -1,50 +1,31 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 import {
-  useQuery,
   useMutation
 } from '@tanstack/react-query';
-import { useToast } from "./ui/use-toast"
-import { Loader } from "lucide-react"
+import { useToast } from "./ui/use-toast";
+import { Loader } from "lucide-react";
 
 interface ISignupState {
-  phoneNumber: string;
-  otp: string;
+  phone: string;
+  password: string;
   firstName: string;
   lastName: string;
-  doctorId: string;
 }
 
-interface DDoc {
-  name: string;
-  id: string;
-}
-
-const getAllDoctors = async () => {
-  const res = await fetch("/api/docs");
-  const docs = await res.json();
-  return docs;
-}
 
 const handleSignupSubmit = async (data: ISignupState) => {
-  if (data.otp === "" || data.phoneNumber.length != 10 || data.firstName.length < 3 || data.lastName.length < 3) {
+  if (data.password === "" || data.phone.length != 10 || data.firstName.length < 3 || data.lastName.length < 3) {
     throw Error("Please fill all the fields before submitting.");
     
   }
@@ -53,7 +34,7 @@ const handleSignupSubmit = async (data: ISignupState) => {
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ ...data, patientName: `${data.firstName} ${data.lastName}` })
+    body: JSON.stringify({ ...data, name: `${data.firstName} ${data.lastName}` })
   });
   if (res.status != 200) {
     throw Error("Can not sign in at the moment, please try again later");
@@ -62,38 +43,26 @@ const handleSignupSubmit = async (data: ISignupState) => {
   const session = await res.json();
 
   console.log(session);
-  localStorage.setItem("session", session.sessionId);
-  window.location.href = "/chat";
+  localStorage.setItem("session", session.token);
+  window.location.href = "/todos";
 }
 
 export const SignupPage = () => {
   const [state, setState] = useState<ISignupState>({
-    phoneNumber: "",
+    phone: "",
     firstName: "",
     lastName: "",
-    otp: "",
-    doctorId: ""
+    password: "",
   });
 
   const { toast } = useToast();
 
   // Queries
-  const { isFetching, isSuccess, isError, data, error } = useQuery<DDoc[]>({
-    queryKey: ['allDoctors'], queryFn: getAllDoctors
-  })
   const signupMutation = useMutation({
     mutationFn: handleSignupSubmit
   })
 
   useEffect(() => {
-    console.log(signupMutation.isSuccess)
-    if (isError) {
-      toast({
-        title: "Error while getting doctors",
-        description: error.message
-      });
-    }
-
     if (signupMutation.isSuccess) {
       toast({
         title: "Welcome!",
@@ -107,7 +76,7 @@ export const SignupPage = () => {
         description: signupMutation.error?.message
       });
     }
-  }, [isError, error, signupMutation.isSuccess, signupMutation.isError, signupMutation.error])
+  }, [signupMutation.isSuccess, signupMutation.isError, signupMutation.error])
 
 
 
@@ -137,35 +106,14 @@ export const SignupPage = () => {
               id="phone"
               type="phone"
               placeholder="729*******"
-              value={state.phoneNumber}
-              onChange={(e) => setState((prev) => ({ ...prev, phoneNumber: e.target.value }))}
+              value={state.phone}
+              onChange={(e) => setState((prev) => ({ ...prev, phone: e.target.value }))}
               required
             />
           </div>
-
           <div className="grid gap-2">
-            <Label htmlFor="doctor">Doctor</Label>
-            {
-              isFetching
-                ? <span>Loading all doctors</span>
-                :
-                <Select onValueChange={(doctor) => setState((prev) => ({ ...prev, doctorId: doctor }))}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Doctor" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {
-                      isSuccess
-                        ? data?.map(doc => <SelectItem key={doc.id} value={doc.id}>{doc.name}</SelectItem>)
-                        : null
-                    }
-                  </SelectContent>
-                </Select>
-            }
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Otp</Label>
-            <Input id="otp" type="text" onChange={(e) => setState((prev) => ({ ...prev, otp: e.target.value }))} />
+            <Label htmlFor="password">Password</Label>
+            <Input id="password" type="password" onChange={(e) => setState((prev) => ({ ...prev, password: e.target.value }))} />
           </div>
           <Button type="submit" className="w-full" onClick={() => signupMutation.mutate(state)}>
             <span className="mr-2">Create an account</span>
