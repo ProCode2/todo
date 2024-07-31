@@ -1,17 +1,7 @@
 import {
-  ListFilter,
   Search,
 } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import {
   Tabs,
@@ -24,6 +14,8 @@ import { AddTodo } from "./AddTodo"
 import { ITodo } from "@/types"
 import { useEffect, useState } from "react"
 import { TodoList } from "./TodoList"
+import { useNavigate } from "react-router-dom"
+import { toast } from "./ui/use-toast"
 
 const getTodos = async () => {
   const res = await fetch("/api/todos", {
@@ -49,8 +41,16 @@ export const TodosPage = () => {
   const [pending, setPending] = useState<ITodo[]>([]);
   const [search, setSearch] = useState("");
   const todosQuery = useQuery<ITodo[]>({ queryKey: ["get-todos"], queryFn: getTodos });
-
+  const navigate = useNavigate();
   useEffect(() => {
+    const loggedIn = window.localStorage.getItem("session");
+    if (!loggedIn) {
+      toast({
+        title: "Please login to continue",
+        description: "You are not authenticated, Please login and try again!"
+      });
+      navigate("/login");
+    }
     if (!todosQuery.data) {
       return;
     }
@@ -95,7 +95,7 @@ export const TodosPage = () => {
                 <TabsTrigger value="completed">Completed</TabsTrigger>
               </TabsList>
               <div className="ml-auto flex items-center gap-2">
-                <AddTodo refetchTodos={refetchTodos}/>
+                <AddTodo refetchTodos={refetchTodos} />
               </div>
             </div>
             {

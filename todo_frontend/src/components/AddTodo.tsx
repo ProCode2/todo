@@ -11,11 +11,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { QueryObserverBaseResult, RefetchOptions, useMutation } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { Loader, PlusCircle } from "lucide-react"
 import { useEffect, useState } from "react"
 import { toast } from "./ui/use-toast"
-import { ITodo } from "@/types"
 
 
 const addTodo = async (task: string) => {
